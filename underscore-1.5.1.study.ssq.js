@@ -1322,7 +1322,7 @@
      var template = _.template("<b><%- value %></b>");
      template({value : '<script>'});
      => "<b>&lt;script&gt;</b>"
-     var compiled = _.template("<% print('Hello ' + epithet); %>"); // 可以使用print代替<%= %>
+     var compiled = _.template("<% print('Hello ' + epithet); %>"); // 可以使用print打印带有常量字符串的变量值，在某些情况下代替<%= %>
      compiled({epithet: "stooge"});
      => "Hello stooge."
      _.template默认使用with获取data的属性和值。可以设置settings的属性variable为一个变量名，这样将不使用with，提高性能
@@ -1347,7 +1347,7 @@
     // Compile the template source, escaping string literals appropriately.
     var index = 0;
     var source = "__p+='"; // source用于拼接编译后的函数体代码
-    //调用replace进行编译，按照_.templateSettings中定义的分界符规则去匹配，在回调函数中定义替换规则
+    // 调用replace进行编译，按照_.templateSettings中定义的分界符规则去匹配，在回调函数中定义替换规则
     text.replace(matcher, function(match, escape, interpolate, evaluate, offset) { // match时匹配项，escape、interpolate、evaluate分别对应相应捕获组的捕获项，offset是匹配位置
       // 首先考虑模板中的HTML部分（index到offset）
       source += text.slice(index, offset)
@@ -1372,7 +1372,7 @@
     if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n'; // 如果没有设置settings.variable，使用with获取传入的obj的属性。如果设置了settings.variable，则不使用with
 
     source = "var __t,__p='',__j=Array.prototype.join," + // source是编译后的函数代码。“__t”是局部变量，用于获取变量的值。"__p"是用于拼接模板
-      "print=function(){__p+=__j.call(arguments,'');};\n" + // print用于打印变量值，同<%= %>
+      "print=function(){__p+=__j.call(arguments,'');};\n" + // print函数用于打印带有常量字符串的变量值。使用Array.prototype.join把print内的参数变成字符串，如上例中变为__p+='Hello '+epithet
       source + "return __p;\n";
 
     try { // 使用try-catch，出错后方便调试
